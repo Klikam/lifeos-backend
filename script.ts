@@ -1,11 +1,11 @@
-import { prisma } from "./lib/prisma";
+import { prisma } from "./src/lib/prisma";
 
 async function main() {
     // Create a new user with a post
     const user = await prisma.user.create({
         data: {
-            name: "Alice",
-            email: "alice@prisma.io",
+            name: "Eduard",
+            email: "eduard@prisma.io",
             posts: {
                 create: {
                     title: "Hello World",

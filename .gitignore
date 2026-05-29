@@ -156,4 +156,4 @@ vite.config.ts.timestamp-*
 /dataSources/
 /dataSources.local.xml
 
-/generated/prisma
+src/generated/prisma
