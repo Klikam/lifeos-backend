@@ -12,18 +12,17 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+enum Frequency {
+  DAILY
+  WEEKLY
+  N_PER_WEEK
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Habit {
+  id Int @id @default(autoincrement())
+  name String
+  frequency Frequency
+  startDate String
+  endDate String?
+  frequencyPerWeek String?
 }

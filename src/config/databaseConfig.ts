@@ -6,7 +6,7 @@ interface DbConfig {
     url: string
 }
 
-const getDbUrl = () => {
+const getDbUrl = (): string => {
     if (!process.env.DATABASE_URL)
         throw new Error("Database URL is not set")
     return process.env.DATABASE_URL

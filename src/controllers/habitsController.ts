@@ -1,10 +1,11 @@
 import type {Request, Response, NextFunction} from "express";
-import {type Habit, habits} from "../models/habit.js";
+import {type Habit, habits} from "../schemas/habit";
+import {usersService} from "../services/habitsService";
 
 // for testing purposes
 export let nextId = 1
 
-export const getHabits = (req: Request, res: Response, next: NextFunction) => {
+export const findMany = (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(habits)
     } catch (err) {
@@ -12,10 +13,18 @@ export const getHabits = (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export const getHabitById = (req: Request, res: Response, next: NextFunction) => {
+export const findById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params
-        const habit = habits.find(hab => hab.id === Number(id))
+        if(!id){
+            res.status(404).json({message: "Habit id is missing"})
+            return
+        }
+        if (typeof id !== "string") {
+            res.status(400).json({message: `Id ${id} doesn't represent a number`})
+            return;
+        }
+        const habit = await usersService.findById(parseInt(id, 10))
         if (!habit) {
             res.status(404).json({message: `Cannot find habit with id ${id}`})
             return
@@ -26,7 +35,7 @@ export const getHabitById = (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
-export const createHabit = (req: Request, res: Response, next: NextFunction) => {
+export const create = (req: Request, res: Response, next: NextFunction) => {
     try {
         const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
         const newHabit: Habit = {
@@ -44,8 +53,9 @@ export const createHabit = (req: Request, res: Response, next: NextFunction) => 
     }
 }
 
-export const updateHabit = (req: Request, res: Response, next: NextFunction) => {
+export const update = (req: Request, res: Response, next: NextFunction) => {
     try {
+        // TODO get id from res.locale
         const {id} = req.params
         const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
         if (typeof id !== "string") {
@@ -73,7 +83,7 @@ export const updateHabit = (req: Request, res: Response, next: NextFunction) => 
     }
 }
 
-export const deleteHabit = (req: Request, res: Response, next: NextFunction) => {
+export const remove = (req: Request, res: Response, next: NextFunction) => {
     const {id} = req.params
 
     if (typeof id !== "string") {
@@ -83,7 +93,7 @@ export const deleteHabit = (req: Request, res: Response, next: NextFunction) => 
 
     const habitIndex = habits.findIndex(hab => hab.id === parseInt(id, 10));
     if (habitIndex === -1) {
-        res.status(404).json({message: "Habit not found"})
+        res.status(404).json({message: "Habits not found"})
         return;
     }
 

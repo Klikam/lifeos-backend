@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from "express";
-import {HabitSchema} from "../models/habit.js"
+import {HabitSchema} from "../schemas/habit"
 import * as z from "zod"
 
 export const habitsValidator = (req: Request, res: Response, next: NextFunction) => {
@@ -14,5 +14,20 @@ export const habitsValidator = (req: Request, res: Response, next: NextFunction)
     }
 
     req.body = result.data
+    next()
+}
+
+export const idValidator = (req: Request, res: Response, next: NextFunction) => {
+    const result = HabitSchema.pick({id: true}).safeParse(req.params)
+
+    if (!result.success) {
+        res.status(400).json({
+            message: "Validation error",
+            details: z.treeifyError(result.error)
+        })
+        return;
+    }
+
+    res.locals.id = result.data
     next()
 }
