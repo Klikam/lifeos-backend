@@ -28,6 +28,6 @@ export const idValidator = (req: Request, res: Response, next: NextFunction) => 
         return;
     }
 
-    res.locals.id = result.data
+    res.locals.id = result.data.id
     next()
 }

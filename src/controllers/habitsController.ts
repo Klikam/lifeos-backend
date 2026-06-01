@@ -1,12 +1,15 @@
 import type {Request, Response, NextFunction} from "express";
 import {type Habit, habits} from "../schemas/habit";
 import {usersService} from "../services/habitsService";
+import {prisma} from "../lib/prisma";
 
 // for testing purposes
+// TODO delete after moving to DB
 export let nextId = 1
 
-export const findMany = (req: Request, res: Response, next: NextFunction) => {
+export const findMany = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const habits: Habit[] | null = await prisma.habit.findMany()
         res.json(habits)
     } catch (err) {
         next(err)
@@ -15,16 +18,8 @@ export const findMany = (req: Request, res: Response, next: NextFunction) => {
 
 export const findById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {id} = req.params
-        if(!id){
-            res.status(404).json({message: "Habit id is missing"})
-            return
-        }
-        if (typeof id !== "string") {
-            res.status(400).json({message: `Id ${id} doesn't represent a number`})
-            return;
-        }
-        const habit = await usersService.findById(parseInt(id, 10))
+        const {id} = res.locals
+        const habit: Habit | null = await usersService.findById(parseInt(id, 10))
         if (!habit) {
             res.status(404).json({message: `Cannot find habit with id ${id}`})
             return
@@ -35,33 +30,29 @@ export const findById = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export const create = (req: Request, res: Response, next: NextFunction) => {
+export const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
-        const newHabit: Habit = {
-            id: nextId++,
-            name,
-            frequency,
-            startDate,
-            endDate,
-            frequencyPerWeek
-        }
-        habits.push(newHabit);
-        res.status(201).json(newHabit)
+        const habit: Habit = await prisma.habit.create({
+            data: {
+                name,
+                frequency,
+                startDate,
+                endDate,
+                frequencyPerWeek
+            }
+        })
+        res.status(201).json(habit)
     } catch (err) {
         next(err)
     }
 }
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO get id from res.locale
-        const {id} = req.params
+        const {id} = res.locals
         const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
-        if (typeof id !== "string") {
-            res.status(400).json({message: `Id ${id} doesn't represent a number`})
-            return;
-        }
+
 
         const habitIdToModify = habits.findIndex(hab => hab.id === parseInt(id, 10))
         if (habitIdToModify === -1) {
@@ -83,21 +74,20 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-    const {id} = req.params
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {id} = res.locals
 
-    if (typeof id !== "string") {
-        res.status(400).json({message: "Id must represent a number"})
-        return;
+        const habitIndex = habits.findIndex(hab => hab.id === parseInt(id, 10));
+        if (habitIndex === -1) {
+            res.status(404).json({message: "Habits not found"})
+            return;
+        }
+
+        const deletedHabit = habits[habitIndex]
+        habits.splice(habitIndex, 1)
+        res.status(200).json(deletedHabit)
+    } catch (err) {
+        next(err)
     }
-
-    const habitIndex = habits.findIndex(hab => hab.id === parseInt(id, 10));
-    if (habitIndex === -1) {
-        res.status(404).json({message: "Habits not found"})
-        return;
-    }
-
-    const deletedHabit = habits[habitIndex]
-    habits.splice(habitIndex, 1)
-    res.status(200).json(deletedHabit)
 }
