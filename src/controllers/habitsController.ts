@@ -1,15 +1,11 @@
 import type {Request, Response, NextFunction} from "express";
-import {type Habit, habits} from "../schemas/habit";
-import {usersService} from "../services/habitsService";
-import {prisma} from "../lib/prisma";
+import type {Habit} from "../schemas/habit";
+import {habitsService} from "../services/habitsService";
 
-// for testing purposes
-// TODO delete after moving to DB
-export let nextId = 1
 
 export const findMany = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const habits: Habit[] | null = await prisma.habit.findMany()
+        const habits: Habit[] | null = await habitsService.findMany()
         res.json(habits)
     } catch (err) {
         next(err)
@@ -19,7 +15,7 @@ export const findMany = async (req: Request, res: Response, next: NextFunction) 
 export const findById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = res.locals
-        const habit: Habit | null = await usersService.findById(parseInt(id, 10))
+        const habit: Habit | null = await habitsService.findById(parseInt(id, 10))
         if (!habit) {
             res.status(404).json({message: `Cannot find habit with id ${id}`})
             return
@@ -32,17 +28,9 @@ export const findById = async (req: Request, res: Response, next: NextFunction) 
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
-        const habit: Habit = await prisma.habit.create({
-            data: {
-                name,
-                frequency,
-                startDate,
-                endDate,
-                frequencyPerWeek
-            }
-        })
-        res.status(201).json(habit)
+        const habit: Habit = req.body;
+        const createdHabit: Habit = await habitsService.create(habit)
+        res.status(201).json(createdHabit)
     } catch (err) {
         next(err)
     }
@@ -51,24 +39,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = res.locals
-        const {name, frequency, startDate, endDate, frequencyPerWeek} = req.body;
+        const habit: Habit = req.body;
 
+        const updatedHabit: Habit | null = await habitsService.update(id, habit)
 
-        const habitIdToModify = habits.findIndex(hab => hab.id === parseInt(id, 10))
-        if (habitIdToModify === -1) {
-            res.status(404).json({message: "Item not found"})
-            return;
-        }
-
-        habits[habitIdToModify] = {
-            id: habitIdToModify,
-            name,
-            frequency,
-            startDate,
-            endDate,
-            frequencyPerWeek
-        }
-        res.json(habits[habitIdToModify])
+        res.status(200).json(updatedHabit)
     } catch (err) {
         next(err)
     }
@@ -77,16 +52,8 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = res.locals
-
-        const habitIndex = habits.findIndex(hab => hab.id === parseInt(id, 10));
-        if (habitIndex === -1) {
-            res.status(404).json({message: "Habits not found"})
-            return;
-        }
-
-        const deletedHabit = habits[habitIndex]
-        habits.splice(habitIndex, 1)
-        res.status(200).json(deletedHabit)
+        await habitsService.delete(id)
+        res.sendStatus(204)
     } catch (err) {
         next(err)
     }

@@ -1,7 +1,5 @@
 import * as z from "zod"
 
-
-
 export const HabitSchema = z.object({
     id: z.coerce.number(),
     name: z.string().max(30),
@@ -12,15 +10,3 @@ export const HabitSchema = z.object({
 })
 
 export type Habit = z.infer<typeof HabitSchema>
-
-// in-memory habits for testing purpose
-export let habits: Habit[] = [
-    {
-        id: 0,
-        name: "testHabit",
-        frequency: "DAILY",
-        startDate: Date.now().toLocaleString(),
-        endDate: null,
-        frequencyPerWeek: null
-    }
-]
