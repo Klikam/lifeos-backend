@@ -1,7 +1,7 @@
 import express, {type Express} from "express";
 import habitRoutes from "./routes/habitRoutes.js";
 import {errorHandler} from "./middlewares/errorHandler.js";
-import {requestLogger} from "./middlewares/reqResLogger";
+import {requestLogger} from "./middlewares/reqResLogger.js";
 
 const app: Express = express();
 

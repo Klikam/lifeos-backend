@@ -1,6 +1,6 @@
 import serverConf from "./config/serverConfig.js";
 import app from "./app.js";
-import {prisma} from "./lib/prisma";
+import {prisma} from "./lib/prisma.js";
 
 const server = app.listen(serverConf.port, serverConf.host, () => {
     console.log(`Server running on ${serverConf.host}:${serverConf.port} `)

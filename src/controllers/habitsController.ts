@@ -1,6 +1,6 @@
 import type {Request, Response, NextFunction} from "express";
-import type {Habit} from "../schemas/habit";
-import {habitsService} from "../services/habitsService";
+import type {Habit} from "../schemas/habit.js";
+import {habitsService} from "../services/habitsService.js";
 
 
 export const findMany = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {create, remove, findById, findMany, update} from "../controllers/habitsController";
+import {create, remove, findById, findMany, update} from "../controllers/habitsController.js";
 import {habitsValidator, idValidator} from "../middlewares/requestValidator.js";
 
 const router: Router = Router()

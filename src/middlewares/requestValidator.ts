@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from "express";
-import {HabitSchema} from "../schemas/habit"
+import {HabitSchema} from "../schemas/habit.js"
 import * as z from "zod"
 
 export const habitsValidator = (req: Request, res: Response, next: NextFunction) => {

@@ -12,6 +12,9 @@ COPY . .
 
 RUN pnpm run build
 
+# remove src and node_modules to reduce image size
+RUN rm -rf src node_modules && pnpm install --prod
+
 EXPOSE 3000
 
 CMD ["pnpm", "start"]

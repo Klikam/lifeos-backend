@@ -1,5 +1,5 @@
-import type {Habit} from "../schemas/habit";
-import {prisma} from "../lib/prisma";
+import type {Habit} from "../schemas/habit.js";
+import {prisma} from "../lib/prisma.js";
 
 const findByName = async (name: string) => {
     const habit: Habit | null = await prisma.habit.findFirst({
