@@ -1,8 +1,58 @@
 import {prisma} from "../lib/prisma";
+import type {User} from "../schemas/user";
 
 export const usersService = {
-    async findById() {},
-    async create() {},
-    async update() {},
-    async delete() {}
+    async findByEmail(email: string) {
+        const user: User | null = await prisma.user.findFirst({
+            where: {email},
+            include: {habits:true}
+        })
+        return user
+    },
+
+    async findById(id: number) {
+        const user: User | null = await prisma.user.findUnique({
+            where: {id},
+            include: {habits:true}
+        })
+        return user
+    },
+
+    async create(data: Omit<User, 'habits'>) {
+        const existingUser: User | null = await this.findByEmail(data.email)
+        if(existingUser){
+            throw new Error(`User with email ${data.email} already exists`)
+        }
+
+        const createdUser: User = await prisma.user.create({
+            data,
+            include: {habits:true}
+        })
+        return createdUser
+    },
+
+    async update(id: number, data: Omit<User, 'habits'>) {
+        const user: User | null = await this.findById(id)
+        if(!user) {
+            throw new Error(`User with id ${id} does not exist`);
+        }
+
+        const updatedUser: User = await prisma.user.update({
+            where: {id},
+            data,
+            include: {habits:true}
+        })
+        return updatedUser
+    },
+
+    async delete(id: number) {
+        const user: User | null = await this.findById(id)
+        if(!user) {
+            throw new Error(`User with id ${id} does not exist`);
+        }
+
+        await prisma.user.delete({
+            where: {id}
+        })
+    }
 }

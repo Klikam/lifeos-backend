@@ -2,7 +2,7 @@ import * as z from "zod";
 import {HabitSchema} from "./habit";
 
 export const UserSchema = z.object({
-    id: z.coerce.number(),
+    id: z.coerce.number().int(),
     name: z.string().max(30).nullable(),
     email: z.email(),
     habits: z.array(HabitSchema)
