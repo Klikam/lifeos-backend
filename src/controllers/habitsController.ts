@@ -14,7 +14,7 @@ export const findMany = async (req: Request, res: Response, next: NextFunction) 
 
 export const findById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {id} = res.locals
+        const id = res.locals.id
         const habit: Habit | null = await habitsService.findById(parseInt(id, 10))
         if (!habit) {
             res.status(404).json({message: `Cannot find habit with id ${id}`})
@@ -38,7 +38,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {id} = res.locals
+        const id = res.locals.id
         const habit: Habit = req.body;
 
         const updatedHabit: Habit | null = await habitsService.update(id, habit)
@@ -51,7 +51,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {id} = res.locals
+        const id = res.locals.id
         await habitsService.delete(id)
         res.sendStatus(204)
     } catch (err) {

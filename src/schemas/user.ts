@@ -1,8 +1,9 @@
 import * as z from "zod";
 import {HabitSchema} from "./habit";
+import {BaseIdSchema} from "./baseId";
 
 export const UserSchema = z.object({
-    id: z.coerce.number().int(),
+    id: BaseIdSchema,
     name: z.string().max(30).nullable(),
     email: z.email(),
     habits: z.array(HabitSchema)

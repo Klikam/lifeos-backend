@@ -1,5 +1,6 @@
 import express, {type Express} from "express";
-import habitRoutes from "./routes/habitRoutes.js";
+import habitsRoutes from "./routes/habitsRoutes";
+import usersRouter from "./routes/usersRoutes"
 import {errorHandler} from "./middlewares/errorHandler.js";
 import {requestLogger} from "./middlewares/reqResLogger.js";
 
@@ -11,7 +12,8 @@ app.use(express.json())
 app.use(requestLogger);
 
 // Routes
-app.use("/api/habits", habitRoutes)
+app.use("/api/habits", habitsRoutes)
+app.use("/api/users", usersRouter)
 
 // Global error handling
 app.use(errorHandler)
