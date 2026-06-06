@@ -24,7 +24,7 @@ export const habitsService = {
         return createdHabit
     },
 
-    async findById(id: number) {
+    async findById(id: string) {
         const habit: Habit | null = await prisma.habit.findUnique({
             where: { id }
         })
@@ -36,7 +36,7 @@ export const habitsService = {
         return habits
     },
 
-    async update(id: number, data: Habit) {
+    async update(id: string, data: Habit) {
         const existingHabit: Habit | null = await prisma.habit.findUnique({
             where: { id }
         })
@@ -52,7 +52,7 @@ export const habitsService = {
         return newHabit
     },
 
-    async delete(id: number) {
+    async delete(id: string) {
         const habit: Habit | null = await this.findById(id)
         if(!habit){
             throw new Error(`Habit with id ${id} does not exist.`)

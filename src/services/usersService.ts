@@ -10,7 +10,7 @@ export const usersService = {
         return user
     },
 
-    async findById(id: number) {
+    async findById(id: string) {
         const user: User | null = await prisma.user.findUnique({
             where: {id},
             include: {habits:true}
@@ -31,7 +31,7 @@ export const usersService = {
         return createdUser
     },
 
-    async update(id: number, data: Omit<User, 'habits'>) {
+    async update(id: string, data: Omit<User, 'habits'>) {
         const user: User | null = await this.findById(id)
         if(!user) {
             throw new Error(`User with id ${id} does not exist`);
@@ -45,7 +45,7 @@ export const usersService = {
         return updatedUser
     },
 
-    async delete(id: number) {
+    async delete(id: string) {
         const user: User | null = await this.findById(id)
         if(!user) {
             throw new Error(`User with id ${id} does not exist`);

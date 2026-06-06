@@ -8,7 +8,7 @@ export const HabitSchema = z.object({
     frequencyPerWeek: z.number().int().positive().min(1).max(7).nullable(),
     startDate: z.string(),
     endDate: z.string().nullable(),
-    ownerId: z.coerce.number()
+    ownerId: z.uuidv4()
 })
 
 export type Habit = z.infer<typeof HabitSchema>

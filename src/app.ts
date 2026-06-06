@@ -3,8 +3,13 @@ import habitsRoutes from "./routes/habitsRoutes";
 import usersRouter from "./routes/usersRoutes"
 import {errorHandler} from "./middlewares/errorHandler.js";
 import {requestLogger} from "./middlewares/reqResLogger.js";
+import {toNodeHandler} from "better-auth/node";
+import {auth} from "./lib/auth";
 
 const app: Express = express();
+
+// Auth -> must be before express.json()
+app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 app.use(express.json())
 

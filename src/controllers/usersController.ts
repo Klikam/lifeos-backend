@@ -29,7 +29,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id: number = res.locals.id
+        const id = res.locals.id
         const newUser: User = req.body
         const updatedUser: User = await usersService.update(id, newUser)
         res.status(200).json(updatedUser)
@@ -40,7 +40,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id: number = res.locals.id
+        const id = res.locals.id
         await usersService.delete(id);
         res.sendStatus(204)
     } catch (err) {
