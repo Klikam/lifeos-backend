@@ -1,5 +1,5 @@
-import * as z from "zod";
+import * as z from 'zod';
 
-export const BaseIdSchema = z.uuidv4()
+export const BaseIdSchema = z.string();
 
-export type BaseId = z.infer<typeof BaseIdSchema>
+export type BaseId = z.infer<typeof BaseIdSchema>;
