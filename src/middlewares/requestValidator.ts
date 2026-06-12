@@ -1,7 +1,6 @@
 import type {Request, Response, NextFunction} from "express";
 import {HabitSchema} from "../schemas/habit.js"
 import * as z from "zod"
-import {BaseIdSchema} from "../schemas/baseId";
 
 export const habitsValidator = (req: Request, res: Response, next: NextFunction) => {
     const result = HabitSchema.omit({id: true}).safeParse(req.body)
@@ -19,7 +18,7 @@ export const habitsValidator = (req: Request, res: Response, next: NextFunction)
 }
 
 export const idValidator = (req: Request, res: Response, next: NextFunction) => {
-    const result = BaseIdSchema.safeParse(req.params.id)
+    const result = z.string().safeParse(req.params.id)
 
     if (!result.success) {
         res.status(400).json({
